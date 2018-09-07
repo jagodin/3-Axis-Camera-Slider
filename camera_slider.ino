@@ -65,3 +65,55 @@ int currentSteps[4] = {0, 0, 0, 1};
 int currentShutter[2] = {0, 0};
 int currentPan[3] = {0, 0, 0};
 int currentTilt[3] = {0, 0, 0};
+
+// Parameter array
+
+int currentChar = ;
+int update = 0;
+double ThArr[] = {0000, 000, 00, 0}
+double HThArr[] = {000000, 00000, 0000, 000, 00, 0}
+double TenArr[] = {00, 0};
+double HunArr[] = {000, 00, 0};
+double currentDistanceInt = 0000;
+double currentDurationInt = 000000;
+double currentStepsInt = 0001;
+double shutterDuration = 2;
+double currentPanInt = 0;
+double currentTiltInt = 0;
+int travelDir = 0
+
+
+// adjust digit up or down
+int adjustDigit(int x, int dir) {
+  if (dir == 0 && x > 0) {
+    x--;
+  }
+  id (dir == 1 && x < 9) {
+    x++;
+  }
+  lcd.setCursor(currentCursorPos, 1);
+  lcd.print(x);
+  currentChar = x;
+  return currentChar;
+}
+
+// Get int value of arrays
+int parseArrayDistance() {
+  for (int i = 0; i < 4; i++) {
+    ThArr[i] = currentDistance[i] * (pow(10, (3-i)));
+  }
+  currentDistanceInt = ThArr[0] + ThArr[1] + ThArr[2] + ThArr[3];
+  update = currentDistanceInt;
+  return update;
+}
+
+int parseArrayDuration)() {
+  for (int i = 0; i < 6; i++) {
+    currentChar = currentDuration[i];
+    HThArr[i] = currentChar * (pow(10, (5-i)));
+  }
+  currentDurationInt = HThArr[0] + HThArr[1] + HThArr[2] + HThArr[3] + HThArr[4] + HThArr[5];
+  update = currentDurationInt;
+  return update;
+}
+
