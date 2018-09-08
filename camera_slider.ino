@@ -162,7 +162,7 @@ int intervalDistance = 0;
 int currentStep = 0;
 int motion = 0;
 
-int motorStepLat(int pulseDelay) {
+void motorStepLat(int pulseDelay) {
   digitalWrite(slpLat, HIGH); // wake motor driver
   digitalWrite(stpLat, HIGH); // step motor driver high
   delay(pulseDelay);
@@ -170,7 +170,7 @@ int motorStepLat(int pulseDelay) {
   digitalWrite(slpLat, LOW); // sleep motor driver (saves power)
 }
 
-int motorStepPan(int pulseDelay) {
+void motorStepPan(int pulseDelay) {
   digitalWrite(slpPan, HIGH);
   digitalWrite(stpPan, HIGH);
   delay(pulseDelay);
@@ -178,7 +178,7 @@ int motorStepPan(int pulseDelay) {
   digitalWrite(slpPan, LOW);
 }
 
-int motorStepTilt(int pulseDelay) {
+void motorStepTilt(int pulseDelay) {
   digitalWrite(slpTilt, HIGH);
   digitalWrite(stpTilt, HIGH);
   delay(pulseDelay);
@@ -186,14 +186,14 @@ int motorStepTilt(int pulseDelay) {
   digitalWrite(slpTilt, HIGH);
 }
 
-int cameraTrig() {
+void cameraTrig() {
   digitalWrite(trig, HIGH);
   delay(80);
   digitalWrite(trig, LOW);
   delay((shutterDuration*1000)-80);
 }
 
-int motionControl() {
+void motionControl() {
   // Lateral movement
   totalMotorStepsLat = currentDistanceInt*5;
   pulseDelay = (1000L * (currentDurationInt - (currentStepsInt*shutterDuration))) / totalMotorSteps;
