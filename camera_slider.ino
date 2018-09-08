@@ -117,3 +117,155 @@ int parseArrayDuration)() {
   return update;
 }
 
+int parseArraySteps() {
+  for (int i = 0; i < 4; i++) {
+    currentCar = currentSteps[i];
+    ThArr[i] = currentChar * pow(10, (3-i));
+  }
+  currentStepsInt = ThArr[0] + ThArr[1] + ThArr[2] + ThArr[3];
+  update = currentStepsInt;
+  return update;
+}
+
+int parseArrayShutter() {
+  for (int i = 0; i < 2; i++) {
+    TenArr[i] = currentShutter[i] * pow(10, (1-i));
+  }
+  shutterDuration = TenArr[0] + TenArr[1];
+  update = shutterDuration;
+  return update;
+}
+
+int parseArrayPan() {
+  for (int i = 0; i < 3; i++) {
+    HunArr[i] = currentPan[i] * pow(10, (1-i));
+  }
+  currentPanInt = HunArr[0] + HunArr[1] + HunArr[2];
+  update = currentPanInt;
+  return update;
+}
+
+int parseArrayTilt() {
+  for (int i = 0; i < 3; i++) {
+    HunArr[i] = currentTilt[i] * pow(10, (1-i));
+  }
+  currentTiltInt = HunArr[0] + HunArr[1] + HunArr[2];
+  update = currentTiltInt;
+  return update;
+}
+
+// Motor control
+
+double totalMotorStepsLat = 0;
+double pulseDelay = 0;
+int intervalDistance = 0;
+int currentStep = 0;
+int motion = 0;
+
+int motorStepLat(int pulseDelay) {
+  digitalWrite(slpLat, HIGH); // wake motor driver
+  digitalWrite(stpLat, HIGH); // step motor driver high
+  delay(pulseDelay);
+  digitalWrite(stpLat, LOW); // step motor driver low
+  digitalWrite(slpLat, LOW); // sleep motor driver (saves power)
+}
+
+int motorStepPan(int pulseDelay) {
+  digitalWrite(slpPan, HIGH);
+  digitalWrite(stpPan, HIGH);
+  delay(pulseDelay);
+  digitalWrite(stpPan, LOW);
+  digitalWrite(slpPan, LOW);
+}
+
+int motorStepTilt(int pulseDelay) {
+  digitalWrite(slpTilt, HIGH);
+  digitalWrite(stpTilt, HIGH);
+  delay(pulseDelay);
+  digitalWrite(stpTilt, HIGH);
+  digitalWrite(slpTilt, HIGH);
+}
+
+int cameraTrig() {
+  digitalWrite(trig, HIGH);
+  delay(80);
+  digitalWrite(trig, LOW);
+  delay((shutterDuration*1000)-80);
+}
+
+int motionControl() {
+  // Lateral movement
+  totalMotorStepsLat = currentDistanceInt*5;
+  pulseDelay = (1000L * (currentDurationInt - (currentStepsInt*shutterDuration))) / totalMotorSteps;
+  intervalDistance = totalMotorSteps / currentStepsInt;
+
+  if (travelDir == 0) {
+    digitalWrite(dirLat, LOW);
+  }
+  else if (travelDir == 1) {
+    digitalWrite(dirLat, HIGH);
+  }
+
+  // align Pan and Tilt to complete with Lateral
+
+
+  // Pan movement  
+
+  
+  // Tilt movement
+
+  
+  do { // fire the motors while currentStep < totalMotorSteps
+    motorStepLat(pulseDelay);
+    currentStep++;
+
+    if (currentStep % intervalDistance == 0){
+      cameraTrig();
+    }
+    
+  } while (currentStep < totalMotorSteps);
+  
+
+
+}
+
+void setup() {
+  lcd.begin(16, 2);
+  lcd.setCursor(0, 0);
+
+  pinMode(trig, OUTPUT);
+  digitalWrite(trig, LOW);
+
+  // stepper pins initialization
+  // Lateral
+  pinMode(stpLat, OUTPUT);
+  pinMode(dirLat, OUTPUT);
+  pinMode(slpLat, OUTPUT);
+
+  // Pan
+  pinMode(stpPan, OUTPUT);
+  pinMode(dirPan, OUTPUT);
+  pinMode(slpPan, OUTPUT);
+
+  // Tilt
+  pinMode(stpTilt, OUTPUT);
+  pinMode(dirTilt, OUTPUT);
+  pinMode(slpTilt, OUTPUT);
+
+  // initialize motor drivers to sleep
+  digitalWrite(slpLat, LOW);
+  digitalWrite(slpPan, LOW);
+  digitalWrite(slpTilt, LOW);
+
+  lcd.print("Welcome!");
+  delay(1500);
+  lcd.clear();
+  lcd.setCursor(0,1);
+  for (int i = 0; i < 4; i++) {
+    lcd.setCursor(i, 1);
+    lcd.print(currentDistance[i]);
+  }
+  lcd.setCursor(4,1);
+  lcd.print("mm");
+}
+
