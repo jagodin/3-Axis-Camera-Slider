@@ -70,6 +70,7 @@ int currentTilt[3] = {0, 0, 0};
 // Parameter array
 
 // array parsing variables
+
 int currentChar = 0;
 int update = 0;
 double ThArr[] = {0000, 000, 00, 0};
@@ -86,6 +87,7 @@ int travelDir = 0;
 
 
 // adjust digit up or down
+
 int adjustDigit(int x, int dir) {
   if (dir == 0 && x > 0) {
     x--;
@@ -99,7 +101,8 @@ int adjustDigit(int x, int dir) {
   return currentChar;
 }
 
-// Get int value of arrays
+// Parsing functions (get int value of arrays)
+
 int parseArrayDistance() {
   for (int i = 0; i < 4; i++) {
     ThArr[i] = currentDistance[i] * (pow(10, (3-i)));
@@ -109,7 +112,7 @@ int parseArrayDistance() {
   return update;
 }
 
-int parseArrayDuration)() {
+int parseArrayDuration() {
   for (int i = 0; i < 6; i++) {
     currentChar = currentDuration[i];
     HThArr[i] = currentChar * (pow(10, (5-i)));
@@ -156,11 +159,14 @@ int parseArrayTilt() {
   return update;
 }
 
-// Motor control
+// Motor control vars
 
 double totalMotorStepsLat = 0;
+double totalMotorStepsPan = 0;
+double totalMotorStepsTilt = 0;
+double pulseDelay = 0;
 double pulseDelayLat = 0;
-int intervalDistance = 0;
+int intervalLat = 0;
 int currentStep = 0;
 int motion = 0;
 
@@ -168,29 +174,33 @@ bool lateral = false;
 bool pan = false;
 bool tilt = false;
 
-void motorStepLat(int pulseDelayLat) {
+// Motor steps (step once)
+
+void motorStepLat(int pulseDelay) {
   digitalWrite(slpLat, HIGH); // wake motor driver
   digitalWrite(stpLat, HIGH); // step motor driver high
-  delay(pulseDelayLat);
+  delay(pulseDelay);
   digitalWrite(stpLat, LOW); // step motor driver low
   digitalWrite(slpLat, LOW); // sleep motor driver (saves power)
 }
 
-void motorStepPan(int pulseDelayPan) {
+void motorStepPan(int pulseDelay) {
   digitalWrite(slpPan, HIGH);
   digitalWrite(stpPan, HIGH);
-  delay(pulseDelayPan);
+  delay(pulseDelay);
   digitalWrite(stpPan, LOW);
   digitalWrite(slpPan, LOW);
 }
 
-void motorStepTilt(int pulseDelayTilt) {
+void motorStepTilt(int pulseDelay) {
   digitalWrite(slpTilt, HIGH);
   digitalWrite(stpTilt, HIGH);
-  delay(pulseDelayTilt);
+  delay(pulseDelay);
   digitalWrite(stpTilt, LOW);
   digitalWrite(slpTilt, LOW);
 }
+
+// Camera trigger
 
 void cameraTrig() {
   digitalWrite(trig, HIGH);
@@ -201,44 +211,37 @@ void cameraTrig() {
 
 void motionControl() {
   // Lateral movement
-  totalMotorStepsLat = currentDistanceInt*5; // 1/5th mm per full motor step
-  pulseDelayLat = (1000L * (currentDurationInt - (currentStepsInt*shutterDuration))) / totalMotorSteps; // delay in milliseconds per step
-  intervalDistance = totalMotorSteps / currentStepsInt;
+  totalMotorStepsLat = currentDistanceInt*5; // 1/5th mm per full motor step, total lateral move steps to make
+  pulseDelayLat = (1000L * (currentDurationInt - (currentStepsInt*shutterDuration))) / totalMotorSteps; // delay in milliseconds per lateral step
+  intervalLat = totalMotorStepsLat / currentStepsInt;
 
-  if (travelDir == 0) {
-    digitalWrite(dirLat, LOW);
-  }
-  else if (travelDir == 1) {
-    digitalWrite(dirLat, HIGH);
-  }
-
-  // align Pan and Tilt to complete with Lateral
-
-
-  // Pan movement  
-
+  // Angular movement
+  totalMotorStepsPan = currentPanInt/1.8; // 1.8 degrees per step
+  totalMotorStepsTilt = currentTiltInt/1.8; 
   
-  // Tilt movement
+  intervalPan = totalMotorStepsLat / totalMotorStepsPan;
+  intervalTilt = totalMotorStepsLat / totalMotorStepsTilt;
 
-  
+  if (travelDir == 0) digitalWrite(dirLat, LOW);
+  else if (travelDir == 1) digitalWrite(dirLat, HIGH);
+
   do { // fire the motors while currentStep < totalMotorSteps
     motorStepLat(pulseDelayLat);
     currentStep++;
 
-    if (currentStep % intervalDistance == 0){
-      cameraTrig();
-    }
-    
-  } while (currentStep < totalMotorSteps);
-  
+    if (currentStep % intervalPan == 0) motorStepPan();
+    if (currentStep % intervalTilt == 0) motorStepPan();
+    if (currentStep % intervalDistance == 0) cameraTrig();
 
-
+  } while (currentStep < totalMotorStepsLat);
 }
 
 void setup() {
+  // LCD initialization
   lcd.begin(16, 2);
   lcd.setCursor(0, 0);
 
+  // trig pin initialization
   pinMode(trig, OUTPUT);
   digitalWrite(trig, LOW);
 
@@ -267,6 +270,9 @@ void setup() {
   delay(1500);
   lcd.clear();
   lcd.setCursor(0,1);
+  lcd.print(menuItems[0]);
+  delay(100);
+  lcd.setCursor(0,1);
   for (int i = 0; i < 4; i++) {
     lcd.setCursor(i, 1);
     lcd.print(currentDistance[i]);
@@ -275,3 +281,60 @@ void setup() {
   lcd.print("mm");
 }
 
+void loop() {
+  do {
+    btnVal = readButtons();
+  } while (btnVal == 5);
+
+  if (currentMenuLevel == 0) {
+    switch(btvVal) {
+      case btnL:
+      {
+        if (currentMenuItem == 0) break;
+        else currentMenuItem--;
+        break;
+      }
+      case btnR:
+      {
+        if (currentMenuItem == 6) break;
+        else currentMenuItem--;
+        break;
+      }
+      case btnSel:
+      {
+        currentMenuItem++;
+        // Error check
+
+
+        if (currentMenuItem == 6) {
+          motionControl();
+          break;
+        }
+      }
+    } // end of switch
+  } else { // end of level 1
+
+    if (currentMenuItem == 0) { // 01 Distance
+
+
+    } else if (currentMenuItem == 1) { // 02 Duration
+
+
+    } else if (currentMenuItem == 2) { // 03 Steps
+
+
+    } else if (currentMenuItem == 3) { // 04 Direction
+
+
+    } else if (currentMenuItem == 4) { // 05 Pan
+
+
+    } else if (currentMenuItem == 5) { // 06 Tilt
+
+
+    } else if(currentMenuItem == 6) { // 07 Go
+
+
+    }
+  }
+}
