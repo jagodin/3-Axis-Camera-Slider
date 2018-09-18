@@ -56,10 +56,11 @@ char* menuItems[] = {" 01 Distance >", "< 02 Duration >", "< 03 Steps > ", "< 04
 
 // Menu variables
 
-int currentMenuLevel = 0;
-int currentMenuItem = 0;
-int currentCursorPos = 0;
-int currentDistance[4] = {0, 0, 0, 0}
+int currentMenuLevel = 0; // top menu or submenu
+int currentMenuItem = 0; // position of menu items
+int currentCursorPos = 0; // current lcd cursor position
+
+int currentDistance[4] = {0, 0, 0, 0};
 int currentDuration[6] = {0, 0, 0, 0, 0, 0};
 int currentSteps[4] = {0, 0, 0, 1};
 int currentShutter[2] = {0, 0};
@@ -68,10 +69,11 @@ int currentTilt[3] = {0, 0, 0};
 
 // Parameter array
 
-int currentChar = ;
+// array parsing variables
+int currentChar = 0;
 int update = 0;
-double ThArr[] = {0000, 000, 00, 0}
-double HThArr[] = {000000, 00000, 0000, 000, 00, 0}
+double ThArr[] = {0000, 000, 00, 0};
+double HThArr[] = {000000, 00000, 0000, 000, 00, 0};
 double TenArr[] = {00, 0};
 double HunArr[] = {000, 00, 0};
 double currentDistanceInt = 0000;
@@ -80,7 +82,7 @@ double currentStepsInt = 0001;
 double shutterDuration = 2;
 double currentPanInt = 0;
 double currentTiltInt = 0;
-int travelDir = 0
+int travelDir = 0;
 
 
 // adjust digit up or down
@@ -157,33 +159,37 @@ int parseArrayTilt() {
 // Motor control
 
 double totalMotorStepsLat = 0;
-double pulseDelay = 0;
+double pulseDelayLat = 0;
 int intervalDistance = 0;
 int currentStep = 0;
 int motion = 0;
 
-void motorStepLat(int pulseDelay) {
+bool lateral = false;
+bool pan = false;
+bool tilt = false;
+
+void motorStepLat(int pulseDelayLat) {
   digitalWrite(slpLat, HIGH); // wake motor driver
   digitalWrite(stpLat, HIGH); // step motor driver high
-  delay(pulseDelay);
+  delay(pulseDelayLat);
   digitalWrite(stpLat, LOW); // step motor driver low
   digitalWrite(slpLat, LOW); // sleep motor driver (saves power)
 }
 
-void motorStepPan(int pulseDelay) {
+void motorStepPan(int pulseDelayPan) {
   digitalWrite(slpPan, HIGH);
   digitalWrite(stpPan, HIGH);
-  delay(pulseDelay);
+  delay(pulseDelayPan);
   digitalWrite(stpPan, LOW);
   digitalWrite(slpPan, LOW);
 }
 
-void motorStepTilt(int pulseDelay) {
+void motorStepTilt(int pulseDelayTilt) {
   digitalWrite(slpTilt, HIGH);
   digitalWrite(stpTilt, HIGH);
-  delay(pulseDelay);
-  digitalWrite(stpTilt, HIGH);
-  digitalWrite(slpTilt, HIGH);
+  delay(pulseDelayTilt);
+  digitalWrite(stpTilt, LOW);
+  digitalWrite(slpTilt, LOW);
 }
 
 void cameraTrig() {
@@ -195,8 +201,8 @@ void cameraTrig() {
 
 void motionControl() {
   // Lateral movement
-  totalMotorStepsLat = currentDistanceInt*5;
-  pulseDelay = (1000L * (currentDurationInt - (currentStepsInt*shutterDuration))) / totalMotorSteps;
+  totalMotorStepsLat = currentDistanceInt*5; // 1/5th mm per full motor step
+  pulseDelayLat = (1000L * (currentDurationInt - (currentStepsInt*shutterDuration))) / totalMotorSteps; // delay in milliseconds per step
   intervalDistance = totalMotorSteps / currentStepsInt;
 
   if (travelDir == 0) {
@@ -216,7 +222,7 @@ void motionControl() {
 
   
   do { // fire the motors while currentStep < totalMotorSteps
-    motorStepLat(pulseDelay);
+    motorStepLat(pulseDelayLat);
     currentStep++;
 
     if (currentStep % intervalDistance == 0){
