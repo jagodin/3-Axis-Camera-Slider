@@ -297,7 +297,7 @@ void loop() {
       case btnR:
       {
         if (currentMenuItem == 6) break;
-        else currentMenuItem--;
+        else currentMenuItem++;
         break;
       }
       case btnSel:
@@ -315,26 +315,125 @@ void loop() {
   } else { // end of level 1
 
     if (currentMenuItem == 0) { // 01 Distance
+      switch(btnVal) {
+        case btnL: {
 
+        }
+        case btnR: {
 
+        }
+        case btnUp: {
+
+        }
+        case btnDn: {
+
+        }
+        case btnSel: {
+
+        }
+      } // end Distance switch
     } else if (currentMenuItem == 1) { // 02 Duration
+      switch(btnVal) {
+        case btnL: {
 
+        }
+        case btnR: {
 
+        }
+        case btnUp: {
+
+        }
+        case btnDn: {
+
+        }
+        case btnSel: {
+
+        }
+      } // end Duration switch
     } else if (currentMenuItem == 2) { // 03 Steps
+      switch(btnVal) {
+        case btnL: {
 
+        }
+        case btnR: {
 
+        }
+        case btnUp: {
+
+        }
+        case btnDn: {
+
+        }
+        case btnSel: {
+
+        }
+      } // end Steps switch
     } else if (currentMenuItem == 3) { // 04 Direction
+      switch(btnVal) {
+        case btnUp: {
 
+        }
+        case btnDn: {
 
+        }
+        case btnSel: {
+
+        }
+      } // end Direction switch
     } else if (currentMenuItem == 4) { // 05 Pan
+      switch(btnVal) {
+        case btnL: {
 
+        }
+        case btnR: {
 
+        }
+        case btnUp: {
+
+        }
+        case btnDn: {
+
+        }
+        case btnSel: {
+
+        }
+      } // end Pan switch
     } else if (currentMenuItem == 5) { // 06 Tilt
+      switch(btnVal) {
+        case btnL: {
 
+        }
+        case btnR: {
 
+        }
+        case btnUp: {
+
+        }
+        case btnDn: {
+
+        }
+        case btnSel: {
+
+        }
+      } // end Tilt switch
     } else if(currentMenuItem == 6) { // 07 Go
+      switch(btnVal) {
+        case btnL: {
 
+        }
+        case btnR: {
 
+        }
+        case btnUp: {
+
+        }
+        case btnDn: {
+
+        }
+        case btnSel: {
+
+        }
+      } // end Distance switch
     }
   }
 }
