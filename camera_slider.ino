@@ -317,121 +317,166 @@ void loop() {
     if (currentMenuItem == 0) { // 01 Distance
       switch(btnVal) {
         case btnL: {
-
+          if (currentCursorPos == 0) break;
+          else currentCursorPos--;
+          break;
         }
         case btnR: {
-
+          if (currentCursorPos == 3) break;
+          else currentCursorPos++;
+          break;
         }
         case btnUp: {
-
+          currentChar = currentDistance[currentCursorPos];
+          adjustDigit(currentChar, 1);
+          currentDistance[currentCursorPos] = currentChar;
+          break;
         }
         case btnDn: {
-
+          currentChar = currentDistance[currentCursorPos];
+          adjustDigit(currentChar, 0);
+          currentDistance[currentCursorPos] = currentChar;
+          break;
         }
         case btnSel: {
-
+          parseArrayDistance();
+          currentMenuLevel--;
         }
       } // end Distance switch
+
     } else if (currentMenuItem == 1) { // 02 Duration
       switch(btnVal) {
         case btnL: {
-
+            if (currentCursorPos == 0) break;
+            else currentCursorPos--;
         }
         case btnR: {
-
+              if (currentCursorPos == 4) break;
+              else currentCursorPos++;
         }
         case btnUp: {
-
+            currentChar = currentDuration[currentCursorPos];
+            adjustDigit(currentChar, 1);
+            currentDuration[currentCursorPos] = currentChar;
         }
         case btnDn: {
-
+            currentChar = currentDuration[currentCursorPos];
+            adjustDigit(currentChar, 0);
+            currentDuration[currentCursorPos] = currentChar;
         }
         case btnSel: {
-
+            parseArrayDuration();
+            currentMenuLevel--;
         }
       } // end Duration switch
+
     } else if (currentMenuItem == 2) { // 03 Steps
       switch(btnVal) {
         case btnL: {
-
+            if (currentCursorPos == 0) break;
+            else currentCursorPos--;
         }
         case btnR: {
-
+            if (currentCursorPos == 3) break;
+            else currentCursorPos++;
         }
         case btnUp: {
-
+            currentChar = currentSteps[currentCursorPos];
+            adjustDigit(currentChar, 1);
+            currentSteps[currentCursorPos] = currentChar;
         }
         case btnDn: {
-
+            currentChar = currentSteps[currentCursorPos];
+            adjustDigit(currentChar, 0);
+            currentSteps[currentCursorPos] = currentChar;
         }
         case btnSel: {
-
+            parseArraySteps();
+            currentMenuLevel--;
         }
       } // end Steps switch
     } else if (currentMenuItem == 3) { // 04 Direction
       switch(btnVal) {
         case btnUp: {
-
+            travelDir = 1;
+            break;
         }
         case btnDn: {
-
+            travelDir = 0;
+            break;
         }
         case btnSel: {
-
+            currentMenuLevel--;
         }
       } // end Direction switch
+
     } else if (currentMenuItem == 4) { // 05 Pan
       switch(btnVal) {
         case btnL: {
-
+            if (currentCursorPos == 0) break;
+            else currentCursorPos--;
         }
         case btnR: {
-
+            if (currentCursorPos == 2) break;
+            else currentCursorPos++;
         }
         case btnUp: {
-
+            currentChar = currentPan[currentCursorPos];
+            adjustDigit(currentChar, 1);
+            currentPan[currentCursorPos] = currentChar;
         }
         case btnDn: {
-
+            currentChar = currentPan[currentCursorPos];
+            adjustDigit(currentChar, 0);
+            currentPan[currentCursorPos] = currentChar;
         }
         case btnSel: {
-
+            parseArrayPan();
+            currentMenuLevel--;
         }
       } // end Pan switch
+
     } else if (currentMenuItem == 5) { // 06 Tilt
       switch(btnVal) {
         case btnL: {
-
+            if (currentCursorPos == 0) break;
+            else currentCursorPos--;
         }
         case btnR: {
-
+            if (currentCursorPos == 2) break;
+            else currentCursorPos++;
         }
         case btnUp: {
-
+            currentChar = currentTilt[currentCursorPos];
+            adjustDigit(currentChar, 1);
+            currentTilt[currentCursorPos] = currentChar;
         }
         case btnDn: {
-
+            currentChar = currentTilt[currentCursorPos];
+            adjustDigit(currentChar, 1);
+            currentTilt[currentCursorPos] = currentChar;
         }
         case btnSel: {
-
+            parseArrayTilt();
+            currentMenuLevel--;
         }
       } // end Tilt switch
     } else if(currentMenuItem == 6) { // 07 Go
       switch(btnVal) {
         case btnL: {
-
+            break;
         }
         case btnR: {
-
+            break;
         }
         case btnUp: {
-
+            break;
         }
         case btnDn: {
-
+            break;
         }
         case btnSel: {
-
+            currentMenuLevel--;
         }
       } // end Distance switch
     }
